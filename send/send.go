@@ -7,7 +7,7 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-func Pipe(message pipes.Message) error {
+func WS(message pipes.Message) error {
 
 	msg, err := sonic.Marshal(message)
 	if err != nil {
@@ -16,7 +16,7 @@ func Pipe(message pipes.Message) error {
 
 	// Send to own client(s)
 	adapter.ReceiveWeb(message.Event.Sender, message.Event, msg)
-	receive.Handle(message)
+	receive.HandleWS(message)
 
 	switch message.Channel.Channel {
 	case "conversation":
@@ -29,5 +29,10 @@ func Pipe(message pipes.Message) error {
 		return sendP2P(message, msg)
 	}
 
+	return nil
+}
+
+func UDP(message pipes.Message) error {
+	// TODO
 	return nil
 }

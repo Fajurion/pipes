@@ -6,7 +6,7 @@ import (
 	"github.com/Fajurion/pipes"
 )
 
-func Handle(message pipes.Message) {
+func HandleWS(message pipes.Message) {
 
 	log.Printf("%s: %s: %s", message.Channel.Channel, message.Event.Sender, message.Event.Name)
 
@@ -21,4 +21,9 @@ func Handle(message pipes.Message) {
 		receiveP2P(message)
 
 	}
+}
+
+// here
+func HandleUDP(message pipes.Message) {
+
 }

@@ -40,6 +40,8 @@ func ConnectToNode(node Node) {
 	nodeConnections.Insert(node.ID, c)
 
 	log.Printf("Outgoing event stream to node %s connected.", node.ID)
+
+	// TODO: Connect to UDP
 }
 
 func ConnectionExists(node string) bool {

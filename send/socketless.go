@@ -15,5 +15,5 @@ func Socketless(nodeEntity pipes.Node, message pipes.Message) error {
 			"message": message,
 		}) */
 
-	return errors.New("Not implemented")
+	return errors.New("not implemented")
 }
