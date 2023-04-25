@@ -5,6 +5,7 @@ import (
 
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/adapter"
+	"github.com/Fajurion/pipes/connection"
 	"nhooyr.io/websocket"
 )
 
@@ -16,7 +17,7 @@ func sendP2P(message pipes.Message, msg []byte) error {
 		return nil
 	}
 
-	pipes.GetConnection(message.Channel.Target[1]).Write(context.Background(), websocket.MessageText, msg)
+	connection.GetWS(message.Channel.Target[1]).Write(context.Background(), websocket.MessageText, msg)
 
 	return nil
 }

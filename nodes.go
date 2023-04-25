@@ -9,7 +9,8 @@ import (
 type Node struct {
 	ID    string `json:"id"`
 	Token string `json:"token"`
-	Host  string `json:"host"`
+	WS    string `json:"ws,omitempty"`
+	UDP   string `json:"udp,omitempty"`
 }
 
 var nodes = hashmap.New[string, Node]()
@@ -24,7 +25,8 @@ func SetupCurrent(id string, token string) {
 	CurrentNode = Node{
 		ID:    id,
 		Token: token,
-		Host:  "",
+		WS:    "",
+		UDP:   "",
 	}
 }
 

@@ -33,6 +33,16 @@ func WS(message pipes.Message) error {
 }
 
 func UDP(message pipes.Message) error {
-	// TODO
+
+	// Swap out for own thing later
+	msg, err := sonic.Marshal(message)
+	if err != nil {
+		return err
+	}
+
+	// Send to own client(s)
+	adapter.ReceiveUDP(message.Event.Sender, message.Event, msg)
+	receive.HandleUDP(message)
+
 	return nil
 }

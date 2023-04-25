@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Fajurion/pipes"
+	"github.com/Fajurion/pipes/connection"
 	"nhooyr.io/websocket"
 )
 
@@ -14,7 +15,7 @@ func sendToConversation(message pipes.Message, msg []byte) error {
 			continue
 		}
 
-		pipes.GetConnection(node).Write(context.Background(), websocket.MessageText, msg)
+		connection.GetWS(node).Write(context.Background(), websocket.MessageText, msg)
 	}
 
 	return nil
