@@ -2,7 +2,6 @@ package receive
 
 import (
 	"log"
-	"net"
 
 	"github.com/Fajurion/pipes"
 	"github.com/bytedance/sonic"
@@ -21,13 +20,13 @@ func ReceiveWS(bytes []byte) {
 	HandleMessage("ws", message)
 }
 
-func ReceiveUDP(bytes []byte, conn *net.UDPConn) {
+func ReceiveUDP(bytes []byte) {
 
 	// Check for adoption request
 	if bytes[0] == 'a' {
 
 		// Adopt node
-		AdoptUDP(bytes, conn)
+		AdoptUDP(bytes)
 		return
 	}
 

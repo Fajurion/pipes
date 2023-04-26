@@ -3,7 +3,6 @@ package receive
 import (
 	"errors"
 	"log"
-	"net"
 
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/connection"
@@ -35,15 +34,7 @@ func ReceiveWSAdoption(request string) error {
 	return nil
 }
 
-func AdoptUDP(bytes []byte, conn *net.UDPConn) {
-
-	// Close connection by default
-	close := true
-	defer func() {
-		if close {
-			conn.Close()
-		}
-	}()
+func AdoptUDP(bytes []byte) {
 
 	// Remove adoption request prefix
 	bytes = bytes[2:]
@@ -59,9 +50,6 @@ func AdoptUDP(bytes []byte, conn *net.UDPConn) {
 	if adoptionRq.Token != pipes.CurrentNode.Token {
 		return
 	}
-
-	// Stop closing connection
-	close = false
 
 	log.Printf("[udp] Incoming event stream from node %s connected.", adoptionRq.Adopting.ID)
 	pipes.AddNode(adoptionRq.Adopting)
