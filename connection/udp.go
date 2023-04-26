@@ -29,6 +29,9 @@ func ConnectUDP(node pipes.Node) {
 		return
 	}
 
+	// Add prefix
+	adoptionRq = append([]byte("a:"), adoptionRq...)
+
 	// Resolve udp address
 	udpAddr, err := net.ResolveUDPAddr("udp", node.UDP)
 	if err != nil {

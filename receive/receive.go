@@ -2,9 +2,45 @@ package receive
 
 import (
 	"log"
+	"net"
 
 	"github.com/Fajurion/pipes"
+	"github.com/bytedance/sonic"
 )
+
+func ReceiveWS(bytes []byte) {
+
+	// Unmarshal
+	var message pipes.Message
+	err := sonic.Unmarshal(bytes, &message)
+	if err != nil {
+		return
+	}
+
+	// Handle message
+	HandleMessage("ws", message)
+}
+
+func ReceiveUDP(bytes []byte, conn *net.UDPConn) {
+
+	// Check for adoption request
+	if bytes[0] == 'a' {
+
+		// Adopt node
+		AdoptUDP(bytes, conn)
+		return
+	}
+
+	// Unmarshal
+	var message pipes.Message
+	err := sonic.Unmarshal(bytes, &message)
+	if err != nil {
+		return
+	}
+
+	// Handle message
+	HandleMessage("udp", message)
+}
 
 func HandleMessage(protocol string, message pipes.Message) {
 

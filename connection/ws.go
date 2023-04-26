@@ -19,8 +19,8 @@ type AdoptionRequest struct {
 
 func ConnectWS(node pipes.Node) {
 
-	// Marshal current node
-	nodeBytes, err := sonic.Marshal(AdoptionRequest{
+	// Marshal adoption request
+	adoptionRq, err := sonic.Marshal(AdoptionRequest{
 		Token:    node.Token,
 		Adopting: pipes.CurrentNode,
 	})
@@ -30,7 +30,7 @@ func ConnectWS(node pipes.Node) {
 
 	// Connect to node
 	c, _, err := websocket.Dial(context.Background(), node.WS, &websocket.DialOptions{
-		Subprotocols: []string{string(nodeBytes)},
+		Subprotocols: []string{string(adoptionRq)},
 	})
 
 	if err != nil {
