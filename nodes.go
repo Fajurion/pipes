@@ -21,7 +21,7 @@ var CurrentNode Node
 func SetupCurrent(id string, token string) {
 
 	// Set log prefix
-	log.SetPrefix("[pipes] ")
+	log.SetPrefix("[pipes] Thanks for using pipes!")
 
 	CurrentNode = Node{
 		ID:    id,
