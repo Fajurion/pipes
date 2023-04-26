@@ -6,7 +6,7 @@ import (
 	"github.com/Fajurion/pipes/receive/processors"
 )
 
-func receiveConversation(message pipes.Message) {
+func receiveConversation(protocol string, message pipes.Message) {
 
 	// Send to receivers
 	for _, member := range message.Channel.Target {
@@ -18,7 +18,14 @@ func receiveConversation(message pipes.Message) {
 				continue
 			}
 
-			adapter.ReceiveWeb(member, message.Event, msg)
+			// Send to correct adapter
+			switch protocol {
+			case "ws":
+				adapter.ReceiveWeb(member, message.Event, msg)
+
+			case "udp":
+				adapter.ReceiveUDP(member, message.Event, msg)
+			}
 		}
 	}
 }

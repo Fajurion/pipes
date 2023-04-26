@@ -38,7 +38,7 @@ func ReceiveWeb(ID string, event pipes.Event, msg []byte) {
 	err := adapter.Receive(event, msg)
 
 	if err != nil {
-		log.Printf("Error receiving message from target %s: %s \n", ID, err)
+		log.Printf("[ws] Error receiving message from target %s: %s \n", ID, err)
 	}
 }
 
@@ -53,6 +53,6 @@ func ReceiveUDP(ID string, event pipes.Event, msg []byte) {
 	err := adapter.Receive(event, msg)
 
 	if err != nil {
-		log.Printf("Error receiving message from target %s: %s \n", ID, err)
+		log.Printf("[udp] Error receiving message from target %s: %s \n", ID, err)
 	}
 }

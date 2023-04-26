@@ -9,8 +9,9 @@ import (
 type Node struct {
 	ID    string `json:"id"`
 	Token string `json:"token"`
-	WS    string `json:"ws,omitempty"`
-	UDP   string `json:"udp,omitempty"`
+	WS    string `json:"ws,omitempty"`  // Websocket ip
+	UDP   string `json:"udp,omitempty"` // UDP ip
+	SL    string `json:"sl,omitempty"`  // Socketless pipe
 }
 
 var nodes = hashmap.New[string, Node]()
@@ -28,6 +29,18 @@ func SetupCurrent(id string, token string) {
 		WS:    "",
 		UDP:   "",
 	}
+}
+
+func SetupWS(ws string) {
+	CurrentNode.WS = ws
+}
+
+func SetupUDP(udp string) {
+	CurrentNode.UDP = udp
+}
+
+func SetupSocketless(sl string) {
+	CurrentNode.SL = sl
 }
 
 func GetNode(id string) *Node {

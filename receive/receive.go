@@ -6,24 +6,20 @@ import (
 	"github.com/Fajurion/pipes"
 )
 
-func HandleWS(message pipes.Message) {
+func HandleMessage(protocol string, message pipes.Message) {
 
-	log.Printf("%s: %s: %s", message.Channel.Channel, message.Event.Sender, message.Event.Name)
+	if pipes.DebugLogs {
+		log.Printf("[%s] %s: %s: %s", protocol, message.Channel.Channel, message.Event.Sender, message.Event.Name)
+	}
 
 	switch message.Channel.Channel {
 	case "broadcast":
-		receiveBroadcast(message)
+		receiveBroadcast(protocol, message)
 
 	case "conversation":
-		receiveConversation(message)
+		receiveConversation(protocol, message)
 
 	case "p2p":
-		receiveP2P(message)
-
+		receiveP2P(protocol, message)
 	}
-}
-
-// here
-func HandleUDP(message pipes.Message) {
-
 }

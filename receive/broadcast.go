@@ -8,7 +8,7 @@ import (
 	"github.com/Fajurion/pipes/receive/processors"
 )
 
-func receiveBroadcast(message pipes.Message) {
+func receiveBroadcast(protocol string, message pipes.Message) {
 
 	if message.Event.Name == "ping" {
 		log.Println("Received ping from node", message.Event.Data["node"])
@@ -23,6 +23,13 @@ func receiveBroadcast(message pipes.Message) {
 			continue
 		}
 
-		adapter.ReceiveWeb(tg, message.Event, msg)
+		// Send to correct adapter
+		switch protocol {
+		case "ws":
+			adapter.ReceiveWeb(tg, message.Event, msg)
+
+		case "udp":
+			adapter.ReceiveUDP(tg, message.Event, msg)
+		}
 	}
 }

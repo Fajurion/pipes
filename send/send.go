@@ -7,42 +7,35 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-func WS(message pipes.Message) error {
+func WS(protocol string, message pipes.Message) error {
 
 	msg, err := sonic.Marshal(message)
 	if err != nil {
 		return err
 	}
 
-	// Send to own client(s)
-	adapter.ReceiveWeb(message.Event.Sender, message.Event, msg)
-	receive.HandleWS(message)
+	// Send to sender
+	switch protocol {
+	case "ws":
+		adapter.ReceiveWeb(message.Event.Sender, message.Event, msg)
+
+	case "udp":
+		adapter.ReceiveUDP(message.Event.Sender, message.Event, msg)
+	}
+
+	// Send to receivers on current node
+	receive.HandleMessage(protocol, message)
 
 	switch message.Channel.Channel {
 	case "conversation":
-		return sendToConversation(message, msg)
+		return sendToConversation(protocol, message, msg)
 
 	case "broadcast":
-		return sendBroadcast(message, msg)
+		return sendBroadcast(protocol, message, msg)
 
 	case "p2p":
-		return sendP2P(message, msg)
+		return sendP2P(protocol, message, msg)
 	}
-
-	return nil
-}
-
-func UDP(message pipes.Message) error {
-
-	// Swap out for own thing later
-	msg, err := sonic.Marshal(message)
-	if err != nil {
-		return err
-	}
-
-	// Send to own client(s)
-	adapter.ReceiveUDP(message.Event.Sender, message.Event, msg)
-	receive.HandleUDP(message)
 
 	return nil
 }

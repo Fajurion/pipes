@@ -1,5 +1,11 @@
 package pipes
 
+var DebugLogs = false
+
+const ChannelP2P = "p"
+const ChannelConversation = "c"
+const ChannelBroadcast = "br"
+
 type Event struct {
 	Sender string                 `json:"sender"` // Sender identifier (0 for system)
 	Name   string                 `json:"name"`
@@ -18,27 +24,27 @@ type Message struct {
 }
 
 func (c Channel) IsP2P() bool {
-	return c.Channel == "p2p"
+	return c.Channel == "p"
 }
 
 func (c Channel) IsConversation() bool {
-	return c.Channel == "conversation"
+	return c.Channel == "c"
 }
 
 func (c Channel) IsBroadcast() bool {
-	return c.Channel == "broadcast"
+	return c.Channel == "br"
 }
 
 func P2PChannel(receiver string, receiverNode string) Channel {
 	return Channel{
-		Channel: "p2p",
+		Channel: "p",
 		Target:  []string{receiver, receiverNode},
 	}
 }
 
 func Conversation(receivers []string, nodes []string) Channel {
 	return Channel{
-		Channel: "conversation",
+		Channel: "c",
 		Target:  receivers,
 		Nodes:   nodes,
 	}
@@ -46,7 +52,7 @@ func Conversation(receivers []string, nodes []string) Channel {
 
 func BroadcastChannel(receivers []string) Channel {
 	return Channel{
-		Channel: "broadcast",
+		Channel: "br",
 		Target:  receivers,
 	}
 }

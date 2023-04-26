@@ -8,7 +8,7 @@ import (
 	"nhooyr.io/websocket"
 )
 
-func sendToConversation(message pipes.Message, msg []byte) error {
+func sendToConversation(protocol string, message pipes.Message, msg []byte) error {
 
 	for _, node := range message.Channel.Nodes {
 		if node == pipes.CurrentNode.ID {

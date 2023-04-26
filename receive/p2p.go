@@ -6,7 +6,7 @@ import (
 	"github.com/Fajurion/pipes/receive/processors"
 )
 
-func receiveP2P(message pipes.Message) {
+func receiveP2P(protocol string, message pipes.Message) {
 
 	// Process the message
 	msg := processors.ProcessMarshal(&message, message.Channel.Target[0])
@@ -15,5 +15,11 @@ func receiveP2P(message pipes.Message) {
 	}
 
 	// Send to receiver
-	adapter.ReceiveWeb(message.Channel.Target[0], message.Event, msg)
+	switch protocol {
+	case "ws":
+		adapter.ReceiveWeb(message.Channel.Target[0], message.Event, msg)
+
+	case "udp":
+		adapter.ReceiveUDP(message.Channel.Target[0], message.Event, msg)
+	}
 }
