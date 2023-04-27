@@ -1,8 +1,6 @@
 package pipes
 
 import (
-	"log"
-
 	"github.com/cornelk/hashmap"
 )
 
@@ -19,9 +17,6 @@ var nodes = hashmap.New[string, Node]()
 var CurrentNode Node
 
 func SetupCurrent(id string, token string) {
-
-	// Set log prefix
-	log.SetPrefix("[pipes] Thanks for using pipes!")
 
 	CurrentNode = Node{
 		ID:    id,
