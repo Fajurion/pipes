@@ -7,7 +7,7 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-func WS(protocol string, message pipes.Message) error {
+func Pipe(protocol string, message pipes.Message) error {
 
 	msg, err := sonic.Marshal(message)
 	if err != nil {
