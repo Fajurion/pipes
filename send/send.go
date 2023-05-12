@@ -7,6 +7,9 @@ import (
 	"github.com/bytedance/sonic"
 )
 
+const ProtocolWS = "ws"
+const ProtocolUDP = "udp"
+
 func Pipe(protocol string, message pipes.Message) error {
 
 	msg, err := sonic.Marshal(message)
