@@ -3,24 +3,26 @@ package receive
 import (
 	"errors"
 	"log"
+	"time"
 
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/connection"
 	"github.com/bytedance/sonic"
+	"nhooyr.io/websocket"
 )
 
-func ReceiveWSAdoption(request string) error {
+func ReceiveWSAdoption(request string) (pipes.Node, error) {
 
 	// Unmarshal
 	var adoptionRq connection.AdoptionRequest
 	err := sonic.Unmarshal([]byte(request), &adoptionRq)
 	if err != nil {
-		return err
+		return pipes.Node{}, err
 	}
 
 	// Check token
 	if adoptionRq.Token != pipes.CurrentNode.Token {
-		return errors.New("invalid token")
+		return pipes.Node{}, errors.New("invalid token")
 	}
 
 	log.Printf("[ws] Incoming event stream from node %s connected.", adoptionRq.Adopting.ID)
@@ -28,10 +30,24 @@ func ReceiveWSAdoption(request string) error {
 
 	// Connect output stream (if not already connected)
 	if !connection.ExistsWS(adoptionRq.Adopting.ID) {
-		connection.ConnectWS(adoptionRq.Adopting)
+
+		go func() {
+			time.Sleep(2 * time.Second)
+
+			log.Println("Connecting to", adoptionRq.Adopting.ID)
+
+			connection.IterateWS(func(id string, value *websocket.Conn) bool {
+				log.Println(id)
+				return true
+			})
+
+			if err := connection.ConnectWS(adoptionRq.Adopting); err != nil {
+				log.Println(err)
+			}
+		}()
 	}
 
-	return nil
+	return adoptionRq.Adopting, nil
 }
 
 func AdoptUDP(bytes []byte) {
