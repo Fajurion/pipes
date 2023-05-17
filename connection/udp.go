@@ -18,7 +18,7 @@ type AdoptionRequest struct {
 }
 */
 
-func ConnectUDP(node pipes.Node) {
+func ConnectUDP(node pipes.Node) error {
 
 	// Marshal current node
 	adoptionRq, err := sonic.Marshal(AdoptionRequest{
@@ -26,7 +26,7 @@ func ConnectUDP(node pipes.Node) {
 		Adopting: pipes.CurrentNode,
 	})
 	if err != nil {
-		return
+		return err
 	}
 
 	// Add prefix
@@ -35,7 +35,7 @@ func ConnectUDP(node pipes.Node) {
 	// Resolve udp address
 	udpAddr, err := net.ResolveUDPAddr("udp", node.UDP)
 	if err != nil {
-		return
+		return err
 	}
 
 	// Connect to node
@@ -43,20 +43,21 @@ func ConnectUDP(node pipes.Node) {
 
 	if err != nil {
 		c.Close()
-		return
+		return err
 	}
 
 	// Send adoption request
 	_, err = c.Write(adoptionRq)
 	if err != nil {
 		c.Close()
-		return
+		return err
 	}
 
 	// Add connection to map
 	nodeUDPConnections.Insert(node.ID, c)
 
 	log.Printf("[udp] Outgoing event stream to node %s connected.", node.ID)
+	return nil
 }
 
 func RemoveUDP(node string) {

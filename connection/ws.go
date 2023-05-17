@@ -17,7 +17,7 @@ type AdoptionRequest struct {
 	Adopting pipes.Node `json:"adpt"`
 }
 
-func ConnectWS(node pipes.Node) {
+func ConnectWS(node pipes.Node) error {
 
 	// Marshal adoption request
 	adoptionRq, err := sonic.Marshal(AdoptionRequest{
@@ -25,7 +25,7 @@ func ConnectWS(node pipes.Node) {
 		Adopting: pipes.CurrentNode,
 	})
 	if err != nil {
-		return
+		return err
 	}
 
 	// Connect to node
@@ -34,13 +34,14 @@ func ConnectWS(node pipes.Node) {
 	})
 
 	if err != nil {
-		return
+		return err
 	}
 
 	// Add connection to map
 	nodeWSConnections.Insert(node.ID, c)
 
 	log.Printf("[ws] Outgoing event stream to node %s connected.", node.ID)
+	return nil
 }
 
 func RemoveWS(node string) {
