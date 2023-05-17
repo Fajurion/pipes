@@ -41,8 +41,23 @@ func ConnectWS(node pipes.Node) {
 	nodeWSConnections.Insert(node.ID, c)
 
 	log.Printf("[ws] Outgoing event stream to node %s connected.", node.ID)
+}
 
-	// TODO: Connect to UDP
+func RemoveWS(node string) {
+
+	// Check if connection exists
+	connection, ok := nodeWSConnections.Get(node)
+	if !ok {
+		return
+	}
+
+	// Close connection
+	connection.Close(websocket.StatusNormalClosure, "Node disconnected")
+
+	// Remove connection from map
+	nodeWSConnections.Del(node)
+
+	log.Printf("[ws] Outgoing event stream to node %s disconnected.", node)
 }
 
 func ExistsWS(node string) bool {

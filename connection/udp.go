@@ -57,8 +57,21 @@ func ConnectUDP(node pipes.Node) {
 	nodeUDPConnections.Insert(node.ID, c)
 
 	log.Printf("[udp] Outgoing event stream to node %s connected.", node.ID)
+}
 
-	// TODO: Connect to UDP
+func RemoveUDP(node string) {
+
+	// Check if connection exists
+	connection, ok := nodeUDPConnections.Get(node)
+	if !ok {
+		return
+	}
+
+	// Close connection
+	connection.Close()
+
+	// Remove connection from map
+	nodeUDPConnections.Del(node)
 }
 
 func ExistsUDP(node string) bool {
