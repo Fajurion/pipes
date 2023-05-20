@@ -17,13 +17,19 @@ func Pipe(protocol string, message pipes.Message) error {
 		return err
 	}
 
+	// Marshal event for sender
+	event, err := sonic.Marshal(message.Event)
+	if err != nil {
+		return err
+	}
+
 	// Send to sender
 	switch protocol {
 	case "ws":
-		adapter.ReceiveWeb(message.Event.Sender, message.Event, msg)
+		adapter.ReceiveWeb(message.Event.Sender, message.Event, event)
 
 	case "udp":
-		adapter.ReceiveUDP(message.Event.Sender, message.Event, msg)
+		adapter.ReceiveUDP(message.Event.Sender, message.Event, event)
 	}
 
 	// Send to receivers on current node

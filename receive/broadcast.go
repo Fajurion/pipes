@@ -17,7 +17,7 @@ func receiveBroadcast(protocol string, message pipes.Message) {
 	// Send to all receivers
 	for _, tg := range message.Channel.Target {
 
-		// Process the message
+		// Process the event
 		msg := processors.ProcessMarshal(&message, tg)
 		if msg == nil {
 			continue
