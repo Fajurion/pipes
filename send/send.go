@@ -4,6 +4,7 @@ import (
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/adapter"
 	"github.com/Fajurion/pipes/receive"
+	"github.com/Fajurion/pipes/receive/processors"
 	"github.com/bytedance/sonic"
 )
 
@@ -12,16 +13,14 @@ const ProtocolUDP = "udp"
 
 func Pipe(protocol string, message pipes.Message) error {
 
+	// Marshal message for sending to other nodes
 	msg, err := sonic.Marshal(message)
 	if err != nil {
 		return err
 	}
 
 	// Marshal event for sender
-	event, err := sonic.Marshal(message.Event)
-	if err != nil {
-		return err
-	}
+	event := processors.ProcessMarshal(&message, message.Event.Sender)
 
 	// Send to sender
 	switch protocol {

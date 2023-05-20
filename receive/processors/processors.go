@@ -28,6 +28,7 @@ func ProcessEvent(message *pipes.Message, target string) pipes.Event {
 		}
 	}()
 
+	// Process the event
 	if Processors[message.Event.Name] != nil {
 		return Processors[message.Event.Name](message, target)
 	}
