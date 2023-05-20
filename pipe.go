@@ -37,14 +37,14 @@ func (c Channel) IsBroadcast() bool {
 
 func P2PChannel(receiver string, receiverNode string) Channel {
 	return Channel{
-		Channel: "p",
+		Channel: ChannelP2P,
 		Target:  []string{receiver, receiverNode},
 	}
 }
 
 func Conversation(receivers []string, nodes []string) Channel {
 	return Channel{
-		Channel: "c",
+		Channel: ChannelConversation,
 		Target:  receivers,
 		Nodes:   nodes,
 	}
@@ -52,7 +52,7 @@ func Conversation(receivers []string, nodes []string) Channel {
 
 func BroadcastChannel(receivers []string) Channel {
 	return Channel{
-		Channel: "br",
+		Channel: ChannelBroadcast,
 		Target:  receivers,
 	}
 }
