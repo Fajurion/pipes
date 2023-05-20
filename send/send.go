@@ -1,6 +1,8 @@
 package send
 
 import (
+	"log"
+
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/adapter"
 	"github.com/Fajurion/pipes/receive"
@@ -13,22 +15,30 @@ const ProtocolUDP = "udp"
 
 func Pipe(protocol string, message pipes.Message) error {
 
+	if pipes.DebugLogs {
+		log.Printf("sent on [%s] %s: %s: %s", protocol, message.Channel.Channel, message.Event.Sender, message.Event.Name)
+	}
+
 	// Marshal message for sending to other nodes
 	msg, err := sonic.Marshal(message)
 	if err != nil {
 		return err
 	}
 
-	// Marshal event for sender
-	event := processors.ProcessMarshal(&message, message.Event.Sender)
+	// Exclude system message
+	if message.Event.Sender != "0" {
 
-	// Send to sender
-	switch protocol {
-	case "ws":
-		adapter.ReceiveWeb(message.Event.Sender, message.Event, event)
+		// Marshal event for sender
+		event := processors.ProcessMarshal(&message, message.Event.Sender)
 
-	case "udp":
-		adapter.ReceiveUDP(message.Event.Sender, message.Event, event)
+		// Send to sender
+		switch protocol {
+		case "ws":
+			adapter.ReceiveWeb(message.Event.Sender, message.Event, event)
+
+		case "udp":
+			adapter.ReceiveUDP(message.Event.Sender, message.Event, event)
+		}
 	}
 
 	// Send to receivers on current node

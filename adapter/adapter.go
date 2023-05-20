@@ -19,11 +19,21 @@ var udpAdapters = hashmap.New[string, Adapter]()
 
 // Register a new adapter for websocket
 func AdaptWS(adapter Adapter) {
+
+	if websocketAdapters.Del(adapter.ID) {
+		log.Printf("[ws] Replacing adapter for target %s \n", adapter.ID)
+	}
+
 	websocketAdapters.Insert(adapter.ID, adapter)
 }
 
 // Register a new adapter for UDP
 func AdaptUDP(adapter Adapter) {
+
+	if udpAdapters.Del(adapter.ID) {
+		log.Printf("[udp] Replacing adapter for target %s \n", adapter.ID)
+	}
+
 	udpAdapters.Insert(adapter.ID, adapter)
 }
 

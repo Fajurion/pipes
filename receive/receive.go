@@ -44,17 +44,17 @@ func ReceiveUDP(bytes []byte) {
 func HandleMessage(protocol string, message pipes.Message) {
 
 	if pipes.DebugLogs {
-		log.Printf("[%s] %s: %s: %s", protocol, message.Channel.Channel, message.Event.Sender, message.Event.Name)
+		log.Printf("received on [%s] %s: %s: %s to %s", protocol, message.Channel.Channel, message.Event.Sender, message.Event.Name, message.Channel.Target)
 	}
 
 	switch message.Channel.Channel {
-	case "broadcast":
+	case pipes.ChannelBroadcast:
 		receiveBroadcast(protocol, message)
 
-	case "conversation":
+	case pipes.ChannelConversation:
 		receiveConversation(protocol, message)
 
-	case "p2p":
+	case pipes.ChannelP2P:
 		receiveP2P(protocol, message)
 	}
 }
