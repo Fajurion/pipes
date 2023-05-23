@@ -21,6 +21,7 @@ type Channel struct {
 type Message struct {
 	Channel Channel `json:"channel"`
 	Event   Event   `json:"event"`
+	NoSelf  bool    `json:"-"` // Whether to send to self (excluded from JSON)
 }
 
 func (c Channel) IsP2P() bool {

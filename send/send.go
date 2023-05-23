@@ -12,6 +12,7 @@ import (
 
 const ProtocolWS = "ws"
 const ProtocolUDP = "udp"
+const SenderSystem = "0"
 
 func Pipe(protocol string, message pipes.Message) error {
 
@@ -26,7 +27,7 @@ func Pipe(protocol string, message pipes.Message) error {
 	}
 
 	// Exclude system message
-	if message.Event.Sender != "0" {
+	if !message.NoSelf && message.Event.Sender != SenderSystem {
 
 		// Marshal event for sender
 		event := processors.ProcessMarshal(&message, message.Event.Sender)
