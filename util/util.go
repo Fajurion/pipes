@@ -21,3 +21,18 @@ func PostRaw(url string, body map[string]interface{}) error {
 
 	return nil
 }
+
+// substring function (credit to https://stackoverflow.com/questions/12311033/extracting-substrings-in-go)
+func Substring(input string, start int, length int) string {
+	asRunes := []rune(input)
+
+	if start >= len(asRunes) {
+		return ""
+	}
+
+	if start+length > len(asRunes) {
+		length = len(asRunes) - start
+	}
+
+	return string(asRunes[start : start+length])
+}

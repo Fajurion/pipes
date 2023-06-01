@@ -12,19 +12,36 @@ import (
 func sendBroadcast(protocol string, message pipes.Message, msg []byte) error {
 
 	// Send to other nodes
+	var mainErr error = nil
 	switch protocol {
 	case "ws":
-		connection.IterateWS(func(_ string, node *websocket.Conn) bool {
-			node.Write(context.Background(), websocket.MessageText, msg)
+		connection.IterateWS(func(id string, node *websocket.Conn) bool {
+
+			// Encrypt message for node
+			encryptedMsg, err := pipes.Encrypt(id, msg)
+			mainErr = err
+			if err != nil {
+				return false
+			}
+
+			node.Write(context.Background(), websocket.MessageText, encryptedMsg)
 			return true
 		})
 
 	case "udp":
-		connection.IterateUDP(func(_ string, node *net.UDPConn) bool {
-			node.Write(msg)
+		connection.IterateUDP(func(id string, node *net.UDPConn) bool {
+
+			// Encrypt message for node
+			encryptedMsg, err := pipes.Encrypt(id, msg)
+			mainErr = err
+			if err != nil {
+				return false
+			}
+
+			node.Write(encryptedMsg)
 			return true
 		})
 	}
 
-	return nil
+	return mainErr
 }
