@@ -9,9 +9,17 @@ import (
 
 func ReceiveWS(bytes []byte) {
 
+	// Decrypt
+	var err error = nil
+	bytes, err = pipes.Decrypt(pipes.CurrentNode.ID, bytes)
+	if err != nil {
+		// TODO: Maybe report this?
+		return
+	}
+
 	// Unmarshal
 	var message pipes.Message
-	err := sonic.Unmarshal(bytes, &message)
+	err = sonic.Unmarshal(bytes, &message)
 	if err != nil {
 		return
 	}
@@ -21,6 +29,14 @@ func ReceiveWS(bytes []byte) {
 }
 
 func ReceiveUDP(bytes []byte) {
+
+	// Decrypt
+	var err error = nil
+	bytes, err = pipes.Decrypt(pipes.CurrentNode.ID, bytes)
+	if err != nil {
+		// TODO: Maybe report this?
+		return
+	}
 
 	// Check for adoption request
 	if bytes[0] == 'a' {
@@ -32,7 +48,7 @@ func ReceiveUDP(bytes []byte) {
 
 	// Unmarshal
 	var message pipes.Message
-	err := sonic.Unmarshal(bytes, &message)
+	err = sonic.Unmarshal(bytes, &message)
 	if err != nil {
 		return
 	}

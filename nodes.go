@@ -91,6 +91,10 @@ func SetupSocketless(sl string) {
 
 func GetNode(id string) *Node {
 
+	if id == CurrentNode.ID {
+		return &CurrentNode
+	}
+
 	// Get node
 	node, ok := nodes.Get(id)
 	if !ok {
