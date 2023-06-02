@@ -18,6 +18,8 @@ type AdoptionRequest struct {
 }
 */
 
+var AdoptionPrefix []byte = nil
+
 func ConnectUDP(node pipes.Node) error {
 
 	// Marshal current node
@@ -31,6 +33,16 @@ func ConnectUDP(node pipes.Node) error {
 
 	// Add prefix
 	adoptionRq = append([]byte("a:"), adoptionRq...)
+
+	// Encrypt
+	adoptionRq, err = pipes.Encrypt(node.ID, adoptionRq)
+	if err != nil {
+		return err
+	}
+
+	if AdoptionPrefix == nil {
+		adoptionRq = append(AdoptionPrefix, adoptionRq...)
+	}
 
 	// Resolve udp address
 	udpAddr, err := net.ResolveUDPAddr("udp", node.UDP)
