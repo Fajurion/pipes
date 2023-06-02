@@ -21,7 +21,7 @@ func sendToConversation(protocol string, message pipes.Message, msg []byte) erro
 		}
 
 		// Encrypt message for node
-		encryptedMsg, err := pipes.Encrypt(node, msg)
+		encryptedMsg, err := connection.Encrypt(node, msg)
 		if err != nil {
 			return err
 		}

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/Fajurion/pipes"
+	"github.com/Fajurion/pipes/connection"
 	"github.com/bytedance/sonic"
 )
 
@@ -11,7 +12,7 @@ func ReceiveWS(bytes []byte) {
 
 	// Decrypt
 	var err error = nil
-	bytes, err = pipes.Decrypt(pipes.CurrentNode.ID, bytes)
+	bytes, err = connection.Decrypt(pipes.CurrentNode.ID, bytes)
 	if err != nil {
 		// TODO: Maybe report this?
 		return
@@ -32,7 +33,7 @@ func ReceiveUDP(bytes []byte) {
 
 	// Decrypt
 	var err error = nil
-	bytes, err = pipes.Decrypt(pipes.CurrentNode.ID, bytes)
+	bytes, err = connection.Decrypt(pipes.CurrentNode.ID, bytes)
 	if err != nil {
 		// TODO: Maybe report this?
 		return

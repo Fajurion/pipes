@@ -18,7 +18,7 @@ func sendP2P(protocol string, message pipes.Message, msg []byte) error {
 	}
 
 	// Encrypt message for node
-	encryptedMsg, err := pipes.Encrypt(message.Channel.Target[1], msg)
+	encryptedMsg, err := connection.Encrypt(message.Channel.Target[1], msg)
 	if err != nil {
 		return err
 	}

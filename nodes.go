@@ -7,7 +7,6 @@ import (
 	"encoding/base64"
 	"log"
 
-	"github.com/Fajurion/pipes/util"
 	"github.com/cornelk/hashmap"
 )
 
@@ -53,30 +52,6 @@ func SetupCurrent(id string, token string) {
 	}
 }
 
-func Encrypt(node string, msg []byte) ([]byte, error) {
-
-	// Get key and encrypt message
-	key := GetNode(node).Cipher
-	encrypted, err := util.EncryptAES(key, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	return encrypted, nil
-}
-
-func Decrypt(node string, msg []byte) ([]byte, error) {
-
-	// Get key and decrypt message
-	key := GetNode(node).Cipher
-	decrypted, err := util.DecryptAES(key, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	return decrypted, nil
-}
-
 func SetupWS(ws string) {
 	CurrentNode.WS = ws
 }
@@ -105,6 +80,17 @@ func GetNode(id string) *Node {
 }
 
 func AddNode(node Node) {
+
+	// Create encryption cipher
+	tokenHash := sha256.Sum256([]byte(node.Token))
+	encryptionKey := tokenHash[:]
+	cipher, err := aes.NewCipher(encryptionKey)
+	if err != nil {
+		log.Println("[node] Error adding node", node.ID, ":", err)
+		return
+	}
+
+	node.Cipher = cipher
 	nodes.Insert(node.ID, node)
 }
 

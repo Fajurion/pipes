@@ -18,7 +18,7 @@ func sendBroadcast(protocol string, message pipes.Message, msg []byte) error {
 		connection.IterateWS(func(id string, node *websocket.Conn) bool {
 
 			// Encrypt message for node
-			encryptedMsg, err := pipes.Encrypt(id, msg)
+			encryptedMsg, err := connection.Encrypt(id, msg)
 			mainErr = err
 			if err != nil {
 				return false
@@ -32,7 +32,7 @@ func sendBroadcast(protocol string, message pipes.Message, msg []byte) error {
 		connection.IterateUDP(func(id string, node *net.UDPConn) bool {
 
 			// Encrypt message for node
-			encryptedMsg, err := pipes.Encrypt(id, msg)
+			encryptedMsg, err := connection.Encrypt(id, msg)
 			mainErr = err
 			if err != nil {
 				return false

@@ -18,7 +18,7 @@ type AdoptionRequest struct {
 }
 */
 
-var AdoptionPrefix []byte = nil
+var GeneralPrefix []byte = nil
 
 func ConnectUDP(node pipes.Node) error {
 
@@ -35,13 +35,9 @@ func ConnectUDP(node pipes.Node) error {
 	adoptionRq = append([]byte("a:"), adoptionRq...)
 
 	// Encrypt
-	adoptionRq, err = pipes.Encrypt(node.ID, adoptionRq)
+	adoptionRq, err = Encrypt(node.ID, adoptionRq)
 	if err != nil {
 		return err
-	}
-
-	if AdoptionPrefix == nil {
-		adoptionRq = append(AdoptionPrefix, adoptionRq...)
 	}
 
 	// Resolve udp address
