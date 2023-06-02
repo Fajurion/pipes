@@ -18,7 +18,7 @@ type Node struct {
 	SL    string `json:"sl,omitempty"`  // Socketless pipe
 
 	// Encryption
-	Cipher cipher.Block
+	Cipher cipher.Block `json:"-"`
 }
 
 var nodes = hashmap.New[string, Node]()

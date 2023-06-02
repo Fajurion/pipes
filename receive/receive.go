@@ -29,33 +29,32 @@ func ReceiveWS(bytes []byte) {
 	HandleMessage("ws", message)
 }
 
-func ReceiveUDP(bytes []byte) {
+func ReceiveUDP(bytes []byte) error {
 
 	// Decrypt
 	var err error = nil
 	bytes, err = connection.Decrypt(pipes.CurrentNode.ID, bytes)
 	if err != nil {
-		// TODO: Maybe report this?
-		return
+		return err
 	}
 
 	// Check for adoption request
 	if bytes[0] == 'a' {
 
 		// Adopt node
-		AdoptUDP(bytes)
-		return
+		return AdoptUDP(bytes)
 	}
 
 	// Unmarshal
 	var message pipes.Message
 	err = sonic.Unmarshal(bytes, &message)
 	if err != nil {
-		return
+		return err
 	}
 
 	// Handle message
 	HandleMessage("udp", message)
+	return nil
 }
 
 func HandleMessage(protocol string, message pipes.Message) {

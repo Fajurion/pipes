@@ -50,21 +50,22 @@ func ReceiveWSAdoption(request string) (pipes.Node, error) {
 	return adoptionRq.Adopting, nil
 }
 
-func AdoptUDP(bytes []byte) {
+func AdoptUDP(bytes []byte) error {
 
 	// Remove adoption request prefix
 	bytes = bytes[2:]
 
 	// Unmarshal
 	var adoptionRq connection.AdoptionRequest
+	log.Println(string(bytes))
 	err := sonic.Unmarshal(bytes, &adoptionRq)
 	if err != nil {
-		return
+		return err
 	}
 
 	// Check token
 	if adoptionRq.Token != pipes.CurrentNode.Token {
-		return
+		return errors.New("invalid token")
 	}
 
 	log.Printf("[udp] Incoming event stream from node %s connected.", adoptionRq.Adopting.ID)
@@ -74,4 +75,6 @@ func AdoptUDP(bytes []byte) {
 	if !connection.ExistsUDP(adoptionRq.Adopting.ID) {
 		connection.ConnectUDP(adoptionRq.Adopting)
 	}
+
+	return nil
 }
