@@ -57,7 +57,6 @@ func AdoptUDP(bytes []byte) error {
 
 	// Unmarshal
 	var adoptionRq connection.AdoptionRequest
-	log.Println(string(bytes))
 	err := sonic.Unmarshal(bytes, &adoptionRq)
 	if err != nil {
 		return err
