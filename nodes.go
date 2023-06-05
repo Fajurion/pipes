@@ -94,6 +94,10 @@ func AddNode(node Node) {
 	nodes.Insert(node.ID, node)
 }
 
+func DeleteNode(node string) {
+	nodes.Del(node)
+}
+
 // IterateConnections iterates over all connections. If the callback returns false, the iteration stops.
 func IterateNodes(callback func(string, Node) bool) {
 	nodes.Range(callback)

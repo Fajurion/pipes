@@ -27,6 +27,7 @@ func SetupDisconnections() {
 					DisconnectHandler(node)
 					RemoveUDP(node.ID)
 					RemoveWS(node.ID)
+					pipes.DeleteNode(node.ID)
 				}
 
 				return true
