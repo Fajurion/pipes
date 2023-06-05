@@ -5,6 +5,7 @@ var DebugLogs = false
 const ChannelP2P = "p"
 const ChannelConversation = "c"
 const ChannelBroadcast = "br"
+const ChannelPing = "ping"
 
 type Event struct {
 	Sender string                 `json:"sender"` // Sender identifier (0 for system)
@@ -40,6 +41,13 @@ func P2PChannel(receiver string, receiverNode string) Channel {
 	return Channel{
 		Channel: ChannelP2P,
 		Target:  []string{receiver, receiverNode},
+	}
+}
+
+func PingChannel(node string) Channel {
+	return Channel{
+		Channel: ChannelP2P,
+		Target:  []string{node},
 	}
 }
 
