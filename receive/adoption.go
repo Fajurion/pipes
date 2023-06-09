@@ -25,7 +25,7 @@ func ReceiveWSAdoption(request string) (pipes.Node, error) {
 		return pipes.Node{}, errors.New("invalid token")
 	}
 
-	log.Printf("[ws] Incoming event stream from node %s connected.", adoptionRq.Adopting.ID)
+	pipes.Log.Printf("[ws] Incoming event stream from node %s connected.", adoptionRq.Adopting.ID)
 	pipes.AddNode(adoptionRq.Adopting)
 
 	// Connect output stream (if not already connected)
@@ -67,7 +67,7 @@ func AdoptUDP(bytes []byte) error {
 		return errors.New("invalid token")
 	}
 
-	log.Printf("[udp] Incoming event stream from node %s connected.", adoptionRq.Adopting.ID)
+	pipes.Log.Printf("[udp] Incoming event stream from node %s connected.", adoptionRq.Adopting.ID)
 	pipes.AddNode(adoptionRq.Adopting)
 
 	// Connect output stream (if not already connected)

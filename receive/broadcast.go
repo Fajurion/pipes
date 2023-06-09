@@ -1,8 +1,6 @@
 package receive
 
 import (
-	"log"
-
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/adapter"
 	"github.com/Fajurion/pipes/receive/processors"
@@ -11,7 +9,7 @@ import (
 func receiveBroadcast(protocol string, message pipes.Message) {
 
 	if message.Event.Name == "ping" {
-		log.Println("Received ping from node", message.Event.Data["node"])
+		pipes.Log.Println("Received ping from node", message.Event.Data["node"])
 	}
 
 	// Send to all receivers

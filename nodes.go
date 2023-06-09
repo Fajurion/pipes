@@ -21,6 +21,8 @@ type Node struct {
 	Cipher cipher.Block `json:"-"`
 }
 
+var Log = log.New(log.Writer(), "pipes ", log.Flags())
+
 var nodes = hashmap.New[string, Node]()
 
 var CurrentNode Node
@@ -35,7 +37,7 @@ func SetupCurrent(id string, token string) {
 	tokenHash := sha256.Sum256([]byte(token))
 	encryptionKey := tokenHash[:]
 
-	log.Println("Encryption key:", base64.StdEncoding.EncodeToString(encryptionKey))
+	Log.Println("Encryption key:", base64.StdEncoding.EncodeToString(encryptionKey))
 
 	cipher, err := aes.NewCipher(encryptionKey)
 	if err != nil {
@@ -86,7 +88,7 @@ func AddNode(node Node) {
 	encryptionKey := tokenHash[:]
 	cipher, err := aes.NewCipher(encryptionKey)
 	if err != nil {
-		log.Println("[node] Error adding node", node.ID, ":", err)
+		Log.Println("[node] Error adding node", node.ID, ":", err)
 		return
 	}
 

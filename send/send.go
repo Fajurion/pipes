@@ -1,8 +1,6 @@
 package send
 
 import (
-	"log"
-
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/adapter"
 	"github.com/Fajurion/pipes/receive"
@@ -17,7 +15,7 @@ const SenderSystem = "0"
 func Pipe(protocol string, message pipes.Message) error {
 
 	if pipes.DebugLogs {
-		log.Printf("sent on [%s] %s: %s: %s", protocol, message.Channel.Channel, message.Event.Sender, message.Event.Name)
+		pipes.Log.Printf("sent on [%s] %s: %s: %s", protocol, message.Channel.Channel, message.Event.Sender, message.Event.Name)
 	}
 
 	// Marshal message for sending to other nodes

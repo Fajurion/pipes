@@ -1,7 +1,6 @@
 package connection
 
 import (
-	"log"
 	"net"
 
 	"github.com/Fajurion/pipes"
@@ -64,7 +63,7 @@ func ConnectUDP(node pipes.Node) error {
 	// Add connection to map
 	nodeUDPConnections.Insert(node.ID, c)
 
-	log.Printf("[udp] Outgoing event stream to node %s connected.", node.ID)
+	pipes.Log.Printf("[udp] Outgoing event stream to node %s connected.", node.ID)
 	return nil
 }
 

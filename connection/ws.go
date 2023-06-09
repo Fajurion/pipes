@@ -2,7 +2,6 @@ package connection
 
 import (
 	"context"
-	"log"
 
 	"github.com/Fajurion/pipes"
 	"github.com/bytedance/sonic"
@@ -40,7 +39,7 @@ func ConnectWS(node pipes.Node) error {
 	// Add connection to map
 	nodeWSConnections.Insert(node.ID, c)
 
-	log.Printf("[ws] Outgoing event stream to node %s connected.", node.ID)
+	pipes.Log.Printf("[ws] Outgoing event stream to node %s connected.", node.ID)
 	return nil
 }
 
@@ -58,7 +57,7 @@ func RemoveWS(node string) {
 	// Remove connection from map
 	nodeWSConnections.Del(node)
 
-	log.Printf("[ws] Outgoing event stream to node %s disconnected.", node)
+	pipes.Log.Printf("[ws] Outgoing event stream to node %s disconnected.", node)
 }
 
 func ExistsWS(node string) bool {
