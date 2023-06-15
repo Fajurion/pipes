@@ -14,7 +14,7 @@ type Event struct {
 }
 
 type Channel struct {
-	Channel string   `json:"channel"` // "p2p", "conversation", "broadcast"
+	Channel string   `json:"channel"` // Channel name
 	Target  []string `json:"target"`  // User IDs to send to (node and user ID for p2p channel)
 	Nodes   []string `json:"-"`       // Nodes to send to (only for conversation channel)
 }
