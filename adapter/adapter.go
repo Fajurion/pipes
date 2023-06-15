@@ -8,11 +8,11 @@ import (
 )
 
 type Adapter struct {
-	ID      string // Identifier of the client
-	Address string // IP and port of the client (UDP only)
+	ID   string      // Identifier of the client
+	Data interface{} // Custom data (not required)
 
 	// Functions
-	Receive func(Context) error
+	Receive func(*Context) error
 }
 
 type Context struct {
@@ -62,7 +62,7 @@ func ReceiveWeb(ID string, event pipes.Event, msg []byte) {
 		return
 	}
 
-	err := adapter.Receive(Context{
+	err := adapter.Receive(&Context{
 		Event:   &event,
 		Message: msg,
 		Adapter: &adapter,
@@ -81,7 +81,7 @@ func ReceiveUDP(ID string, event pipes.Event, msg []byte) {
 		return
 	}
 
-	err := adapter.Receive(Context{
+	err := adapter.Receive(&Context{
 		Event:   &event,
 		Message: msg,
 		Adapter: &adapter,
