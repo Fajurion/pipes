@@ -8,7 +8,7 @@ const ChannelBroadcast = "br"
 const ChannelPing = "ping"
 
 type Event struct {
-	Sender string                 `json:"sender"` // Sender identifier (0 for system)
+	Sender string                 `json:"sender"` // Sender identifier ("0" for system)
 	Name   string                 `json:"name"`
 	Data   map[string]interface{} `json:"data"`
 }
