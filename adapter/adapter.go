@@ -8,16 +8,23 @@ import (
 )
 
 type Adapter struct {
-	ID string // Identifier of the client
+	ID      string // Identifier of the client
+	Address string // IP and port of the client (UDP only)
 
 	// Functions
-	Receive func(pipes.Event, []byte) error
+	Receive func(Context) error
+}
+
+type Context struct {
+	Event   *pipes.Event
+	Message []byte
+	Adapter *Adapter
 }
 
 var websocketAdapters = hashmap.New[string, Adapter]()
 var udpAdapters = hashmap.New[string, Adapter]()
 
-// Register a new adapter for websocket
+// Register a new adapter for websocket/sl (all safe protocols)
 func AdaptWS(adapter Adapter) {
 
 	if websocketAdapters.Del(adapter.ID) {
@@ -37,6 +44,16 @@ func AdaptUDP(adapter Adapter) {
 	udpAdapters.Insert(adapter.ID, adapter)
 }
 
+// Remove a websocket/sl adapter
+func RemoveWS(ID string) {
+	websocketAdapters.Del(ID)
+}
+
+// Remove a UDP adapter
+func RemoveUDP(ID string) {
+	udpAdapters.Del(ID)
+}
+
 // Handles receiving messages from the target and passes them to the adapter
 func ReceiveWeb(ID string, event pipes.Event, msg []byte) {
 
@@ -45,7 +62,11 @@ func ReceiveWeb(ID string, event pipes.Event, msg []byte) {
 		return
 	}
 
-	err := adapter.Receive(event, msg)
+	err := adapter.Receive(Context{
+		Event:   &event,
+		Message: msg,
+		Adapter: &adapter,
+	})
 
 	if err != nil {
 		log.Printf("[ws] Error receiving message from target %s: %s \n", ID, err)
@@ -60,7 +81,11 @@ func ReceiveUDP(ID string, event pipes.Event, msg []byte) {
 		return
 	}
 
-	err := adapter.Receive(event, msg)
+	err := adapter.Receive(Context{
+		Event:   &event,
+		Message: msg,
+		Adapter: &adapter,
+	})
 
 	if err != nil {
 		log.Printf("[udp] Error receiving message from target %s: %s \n", ID, err)
