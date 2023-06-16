@@ -43,6 +43,10 @@ func Pipe(protocol string, message pipes.Message) error {
 	// Send to receivers on current node
 	receive.HandleMessage(protocol, message)
 
+	if message.Local {
+		return nil
+	}
+
 	switch message.Channel.Channel {
 	case "conversation":
 		return sendToConversation(protocol, message, msg)

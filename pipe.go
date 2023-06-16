@@ -23,6 +23,7 @@ type Message struct {
 	Channel Channel `json:"channel"`
 	Event   Event   `json:"event"`
 	NoSelf  bool    `json:"-"` // Whether to send to self (excluded from JSON)
+	Local   bool    `json:"-"` // Whether to only send to local clients (excluded from JSON)
 }
 
 func (c Channel) IsP2P() bool {

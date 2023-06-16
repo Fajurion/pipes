@@ -13,7 +13,13 @@ func sendP2P(protocol string, message pipes.Message, msg []byte) error {
 
 	// Check if receiver is on this node
 	if message.Channel.Target[0] == pipes.CurrentNode.ID {
-		adapter.ReceiveWeb(message.Channel.Target[1], message.Event, msg)
+		switch protocol {
+		case "ws":
+			adapter.ReceiveWeb(message.Channel.Target[1], message.Event, msg)
+
+		case "udp":
+			adapter.ReceiveUDP(message.Channel.Target[1], message.Event, msg)
+		}
 		return nil
 	}
 

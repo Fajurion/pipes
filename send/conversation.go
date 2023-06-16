@@ -2,7 +2,6 @@ package send
 
 import (
 	"context"
-	"errors"
 
 	"github.com/Fajurion/pipes"
 	"github.com/Fajurion/pipes/connection"
@@ -10,10 +9,6 @@ import (
 )
 
 func sendToConversation(protocol string, message pipes.Message, msg []byte) error {
-
-	if protocol == "udp" {
-		return errors.New("udp not supported for conversation")
-	}
 
 	for _, node := range message.Channel.Nodes {
 		if node == pipes.CurrentNode.ID {
@@ -26,7 +21,13 @@ func sendToConversation(protocol string, message pipes.Message, msg []byte) erro
 			return err
 		}
 
-		connection.GetWS(node).Write(context.Background(), websocket.MessageText, encryptedMsg)
+		switch protocol {
+		case "ws":
+			connection.GetWS(node).Write(context.Background(), websocket.MessageText, encryptedMsg)
+
+		case "udp":
+			connection.GetUDP(node).Write(encryptedMsg)
+		}
 	}
 
 	return nil
