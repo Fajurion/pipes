@@ -5,6 +5,7 @@ import (
 
 	"github.com/Fajurion/pipes"
 	"github.com/cornelk/hashmap"
+	"github.com/dgraph-io/ristretto"
 )
 
 type Adapter struct {
@@ -24,24 +25,62 @@ type Context struct {
 var websocketAdapters = hashmap.New[string, Adapter]()
 var udpAdapters = hashmap.New[string, Adapter]()
 
+var websocketCache *ristretto.Cache
+var udpCache *ristretto.Cache
+
+func SetupCaching() {
+	var err error
+	websocketCache, err = ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7, // number of keys to track frequency of (10M).
+		MaxCost:     1e6,
+		BufferItems: 64,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	udpCache, err = ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7, // number of keys to track frequency of (10M).
+		MaxCost:     1e6,
+		BufferItems: 64,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+}
+
 // Register a new adapter for websocket/sl (all safe protocols)
 func AdaptWS(adapter Adapter) {
 
-	if websocketAdapters.Del(adapter.ID) {
+	if websocketCache == nil {
+		panic("Please call adapter.SetupCaching() before using the adapter package")
+	}
+
+	_, ok := websocketAdapters.Get(adapter.ID)
+	if ok {
+		websocketCache.Del(adapter.ID)
 		log.Printf("[ws] Replacing adapter for target %s \n", adapter.ID)
 	}
 
-	websocketAdapters.Insert(adapter.ID, adapter)
+	websocketCache.Set(adapter.ID, adapter, 1)
 }
 
 // Register a new adapter for UDP
 func AdaptUDP(adapter Adapter) {
 
-	if udpAdapters.Del(adapter.ID) {
+	if websocketCache == nil {
+		panic("Please call adapter.SetupCaching() before using the adapter package")
+	}
+
+	_, ok := udpAdapters.Get(adapter.ID)
+	if ok {
+		udpCache.Del(adapter.ID)
 		log.Printf("[udp] Replacing adapter for target %s \n", adapter.ID)
 	}
 
-	udpAdapters.Insert(adapter.ID, adapter)
+	udpCache.Set(adapter.ID, adapter, 1)
 }
 
 // Remove a websocket/sl adapter
