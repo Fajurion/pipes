@@ -31,8 +31,8 @@ var udpCache *ristretto.Cache
 func SetupCaching() {
 	var err error
 	websocketCache, err = ristretto.NewCache(&ristretto.Config{
-		NumCounters: 1e7, // number of keys to track frequency of (10M).
-		MaxCost:     1e6,
+		NumCounters: 1e7,     // number of keys to track frequency of (10M).
+		MaxCost:     1 << 30, // maximum cost of cache (1GB).
 		BufferItems: 64,
 	})
 
@@ -41,8 +41,8 @@ func SetupCaching() {
 	}
 
 	udpCache, err = ristretto.NewCache(&ristretto.Config{
-		NumCounters: 1e7, // number of keys to track frequency of (10M).
-		MaxCost:     1e6,
+		NumCounters: 1e7,     // number of keys to track frequency of (10M).
+		MaxCost:     1 << 30, // maximum cost of cache (1GB).
 		BufferItems: 64,
 	})
 
@@ -64,7 +64,7 @@ func AdaptWS(adapter Adapter) {
 		log.Printf("[ws] Replacing adapter for target %s \n", adapter.ID)
 	}
 
-	websocketCache.Set(adapter.ID, adapter, 1)
+	websocketCache.Set(adapter.ID, &adapter, 1)
 }
 
 // Register a new adapter for UDP
@@ -80,7 +80,7 @@ func AdaptUDP(adapter Adapter) {
 		log.Printf("[udp] Replacing adapter for target %s \n", adapter.ID)
 	}
 
-	udpCache.Set(adapter.ID, adapter, 1)
+	udpCache.Set(adapter.ID, &adapter, 1)
 }
 
 // Remove a websocket/sl adapter
@@ -96,15 +96,16 @@ func RemoveUDP(ID string) {
 // Handles receiving messages from the target and passes them to the adapter
 func ReceiveWeb(ID string, event pipes.Event, msg []byte) {
 
-	adapter, ok := websocketAdapters.Get(ID)
+	obj, ok := websocketCache.Get(ID)
 	if !ok {
 		return
 	}
 
+	adapter := obj.(*Adapter)
 	err := adapter.Receive(&Context{
 		Event:   &event,
 		Message: msg,
-		Adapter: &adapter,
+		Adapter: adapter,
 	})
 
 	if err != nil {
@@ -115,15 +116,16 @@ func ReceiveWeb(ID string, event pipes.Event, msg []byte) {
 // Handles receiving messages from the target and passes them to the adapter
 func ReceiveUDP(ID string, event pipes.Event, msg []byte) {
 
-	adapter, ok := udpAdapters.Get(ID)
+	obj, ok := udpCache.Get(ID)
 	if !ok {
 		return
 	}
 
+	adapter := obj.(*Adapter)
 	err := adapter.Receive(&Context{
 		Event:   &event,
 		Message: msg,
-		Adapter: &adapter,
+		Adapter: adapter,
 	})
 
 	if err != nil {
