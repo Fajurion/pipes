@@ -7,9 +7,8 @@ const ChannelConversation = "c"
 const ChannelBroadcast = "br"
 
 type Event struct {
-	Sender string                 `json:"sender"` // Sender identifier ("0" for system)
-	Name   string                 `json:"name"`
-	Data   map[string]interface{} `json:"data"`
+	Name string                 `json:"name"`
+	Data map[string]interface{} `json:"data"`
 }
 
 type Channel struct {
@@ -21,7 +20,6 @@ type Channel struct {
 type Message struct {
 	Channel Channel `json:"channel"`
 	Event   Event   `json:"event"`
-	NoSelf  bool    `json:"-"` // Whether to send to self (excluded from JSON)
 	Local   bool    `json:"-"` // Whether to only send to local clients (excluded from JSON)
 }
 

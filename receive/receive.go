@@ -58,7 +58,7 @@ func ReceiveUDP(bytes []byte) error {
 func HandleMessage(protocol string, message pipes.Message) {
 
 	if pipes.DebugLogs {
-		pipes.Log.Printf("received on [%s] %s: %s: %s to %s", protocol, message.Channel.Channel, message.Event.Sender, message.Event.Name, message.Channel.Target)
+		pipes.Log.Printf("received on [%s] %s: %s to %s", protocol, message.Channel.Channel, message.Event.Name, message.Channel.Target)
 	}
 
 	switch message.Channel.Channel {

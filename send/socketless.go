@@ -9,7 +9,7 @@ import (
 func Socketless(nodeEntity pipes.Node, message pipes.Message) error {
 
 	if pipes.DebugLogs {
-		pipes.Log.Printf("sent on [socketless] %s: %s: %s", message.Channel.Channel, message.Event.Sender, message.Event.Name)
+		pipes.Log.Printf("sent on [socketless] %s: %s", message.Channel.Channel, message.Event.Name)
 	}
 
 	if nodeEntity.ID == pipes.CurrentNode.ID {
