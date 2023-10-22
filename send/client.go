@@ -6,7 +6,7 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-// ClientUDP is a function that sends a UDP packet to the client
+// ClientUDP is a function that sends a WS packet to the client
 func Client(id string, event pipes.Event) {
 
 	msg, err := sonic.Marshal(event)
