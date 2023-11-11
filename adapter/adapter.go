@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"log"
+	"sync"
 
 	"github.com/Fajurion/pipes"
 	"github.com/cornelk/hashmap"
@@ -9,8 +10,9 @@ import (
 )
 
 type Adapter struct {
-	ID   string      // Identifier of the client
-	Data interface{} // Custom data (not required)
+	ID    string      // Identifier of the client
+	Mutex *sync.Mutex // Mutex to prevent concurrent sending (WHY DO I NEED TO DO THIS??)
+	Data  interface{} // Custom data (not required)
 
 	// Functions
 	Receive func(*Context) error
@@ -53,6 +55,9 @@ func SetupCaching() {
 
 // Register a new adapter for websocket/sl (all safe protocols)
 func AdaptWS(adapter Adapter) {
+	if adapter.Mutex == nil {
+		adapter.Mutex = &sync.Mutex{}
+	}
 
 	if websocketCache == nil {
 		panic("Please call adapter.SetupCaching() before using the adapter package")
@@ -69,6 +74,9 @@ func AdaptWS(adapter Adapter) {
 
 // Register a new adapter for UDP
 func AdaptUDP(adapter Adapter) {
+	if adapter.Mutex == nil {
+		adapter.Mutex = &sync.Mutex{}
+	}
 
 	if websocketCache == nil {
 		panic("Please call adapter.SetupCaching() before using the adapter package")
@@ -102,11 +110,13 @@ func ReceiveWeb(ID string, event pipes.Event, msg []byte) {
 	}
 
 	adapter := obj.(*Adapter)
+	adapter.Mutex.Lock()
 	err := adapter.Receive(&Context{
 		Event:   &event,
 		Message: msg,
 		Adapter: adapter,
 	})
+	adapter.Mutex.Unlock()
 
 	if err != nil {
 		log.Printf("[ws] Error receiving message from target %s: %s \n", ID, err)
@@ -122,11 +132,13 @@ func ReceiveUDP(ID string, event pipes.Event, msg []byte) {
 	}
 
 	adapter := obj.(*Adapter)
+	adapter.Mutex.Lock()
 	err := adapter.Receive(&Context{
 		Event:   &event,
 		Message: msg,
 		Adapter: adapter,
 	})
+	adapter.Mutex.Unlock()
 
 	if err != nil {
 		log.Printf("[udp] Error receiving message from target %s: %s \n", ID, err)
