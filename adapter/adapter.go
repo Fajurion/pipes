@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/Fajurion/pipes"
-	"github.com/cornelk/hashmap"
 	"github.com/dgraph-io/ristretto"
 )
 
@@ -23,9 +22,6 @@ type Context struct {
 	Message []byte
 	Adapter *Adapter
 }
-
-var websocketAdapters = hashmap.New[string, Adapter]()
-var udpAdapters = hashmap.New[string, Adapter]()
 
 var websocketCache *ristretto.Cache
 var udpCache *ristretto.Cache
@@ -63,7 +59,7 @@ func AdaptWS(adapter Adapter) {
 		panic("Please call adapter.SetupCaching() before using the adapter package")
 	}
 
-	_, ok := websocketAdapters.Get(adapter.ID)
+	_, ok := websocketCache.Get(adapter.ID)
 	if ok {
 		websocketCache.Del(adapter.ID)
 		log.Printf("[ws] Replacing adapter for target %s \n", adapter.ID)
@@ -82,7 +78,7 @@ func AdaptUDP(adapter Adapter) {
 		panic("Please call adapter.SetupCaching() before using the adapter package")
 	}
 
-	_, ok := udpAdapters.Get(adapter.ID)
+	_, ok := udpCache.Get(adapter.ID)
 	if ok {
 		udpCache.Del(adapter.ID)
 		log.Printf("[udp] Replacing adapter for target %s \n", adapter.ID)
@@ -93,12 +89,12 @@ func AdaptUDP(adapter Adapter) {
 
 // Remove a websocket/sl adapter
 func RemoveWS(ID string) {
-	websocketAdapters.Del(ID)
+	websocketCache.Del(ID)
 }
 
 // Remove a UDP adapter
 func RemoveUDP(ID string) {
-	udpAdapters.Del(ID)
+	udpCache.Del(ID)
 }
 
 // Handles receiving messages from the target and passes them to the adapter
